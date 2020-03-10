@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 public class FXMLController {
 	
 	Parole elenco ;
+	long tempoTot=0;
 
     @FXML
     private ResourceBundle resources;
@@ -34,14 +35,51 @@ public class FXMLController {
 
     @FXML
     void doInsert(ActionEvent event) {
-    	// TODO
+    	String parola = txtParola.getText();
+    	elenco.addParola(parola);
+    	btnCancella.setDisable(false);
+    	txtParola.clear();
+    	String s="";
+    	for (int i=0; i<elenco.getElenco().size(); i++)
+    		s+=elenco.getElenco().get(i)+"\n";
+    	txtResult.setText(s);
+    	calcolaTempo(System.nanoTime());
     }
 
     @FXML
     void doReset(ActionEvent event) {
-    	// TODO
+    	txtResult.clear();
+    	elenco.reset();
+    	txtResult.appendText("Lista vuota");
+    	calcolaTempo(System.nanoTime());
+    }
+    
+
+    @FXML
+    private Button btnCancella;
+    
+    @FXML
+    private TextArea txtTime;
+
+    @FXML
+    void doCancella(ActionEvent event) {
+    	elenco.removeParola(txtResult.getSelectedText());
+    	String s="";
+    	for (int i=0; i<elenco.getElenco().size(); i++)
+    		s+=elenco.getElenco().get(i)+"\n";
+    	txtResult.setText(s);
+    	
+    	if (elenco.getElenco().size()==0)
+    		btnCancella.setDisable(true);
+    	calcolaTempo(System.nanoTime());
     }
 
+    void calcolaTempo(long t) {
+    	tempoTot+=t;
+    	System.out.println(tempoTot);
+    	txtTime.appendText(Long.toString(t)+"\n");
+    }
+    
     @FXML
     void initialize() {
         assert txtParola != null : "fx:id=\"txtParola\" was not injected: check your FXML file 'Scene.fxml'.";
